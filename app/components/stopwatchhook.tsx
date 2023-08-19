@@ -1,11 +1,3 @@
-/* 
- time.seconds/minutes/hours
- start method
- stop method
- result?
-
-*/
-
 import { useState, useRef } from "react";
 import { intervalToDuration } from "date-fns";
 
@@ -25,26 +17,6 @@ export function useStopWatch(options?: {}) {
   });
   const [status, setStatus] = useState<"stopped" | "running">("stopped");
   const intervalRef = useRef<NodeJS.Timeout>(null!);
-
-  /*  function handleStartStopButtons() {
-    if (!timerStarted) {
-      startTimer();
-      setTimerStarted(!timerStarted);
-    } else {
-      setPreviousTimes((prev) => prev.concat({ ...time, id: uuidv4() }));
-      setTime({
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-        id: "no assigned id",
-      });
-      setTimerStarted(!timerStarted);
-      clearInterval(intervalRef.current);
-    }
-  }
-
-  
-  } */
 
   function stop() {
     setStatus("stopped");
