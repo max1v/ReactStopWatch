@@ -2,57 +2,23 @@
 
 import { v4 as uuidv4 } from "uuid";
 import { useState, useRef } from "react";
-import { intervalToDuration } from "date-fns";
 
-interface Times {
-  hours: number;
-  minutes: number;
-  seconds: number;
-  id: string;
-}
+import { type Times, useStopWatch } from "./components/stopwatchhook";
 
 export default function Stopwatch() {
   const [timerStarted, setTimerStarted] = useState(false);
   const [previousTimes, setPreviousTimes] = useState<Times[]>([]);
-  const [time, setTime] = useState<Times>({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-    id: "no assigned id",
-  });
-  const intervalRef = useRef<NodeJS.Timeout>(null!);
+  const { time, start, stop, status } = useStopWatch();
 
   function handleStartStopButtons() {
     if (!timerStarted) {
-      startTimer();
+      start();
       setTimerStarted(!timerStarted);
     } else {
       setPreviousTimes((prev) => prev.concat({ ...time, id: uuidv4() }));
-      setTime({
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-        id: "no assigned id",
-      });
+      stop();
       setTimerStarted(!timerStarted);
-      clearInterval(intervalRef.current);
     }
-  }
-
-  function startTimer() {
-    let startTime = Date.now();
-    intervalRef.current = setInterval(() => {
-      const timeSpent = intervalToDuration({
-        start: startTime,
-        end: Date.now(),
-      });
-      setTime({
-        hours: timeSpent.hours as number,
-        minutes: timeSpent.minutes as number,
-        seconds: timeSpent.seconds as number,
-        id: time.id,
-      });
-    }, 10);
   }
 
   return (
@@ -63,6 +29,7 @@ export default function Stopwatch() {
         <p>{time.minutes} minutes</p>
         <p>{time.hours} hours</p>
       </div>
+      <p>{status === "running" ? "running" : "stopped"}</p>
       <div id="controls" className="flex justify-between gap-1">
         {timerStarted ? (
           <button
