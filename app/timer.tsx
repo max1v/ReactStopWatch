@@ -89,12 +89,14 @@ export default function Stopwatch() {
         )}
       </div>
       <ul>
+        <h1>Previous Times</h1>
         {previousTimes.map((t) => {
           return (
             <li key={t.id}>{`${t.seconds}s ${t.minutes}m ${t.hours}h`}</li>
           );
         })}
       </ul>
+      <p>Does it work?</p>
     </div>
   );
 }
