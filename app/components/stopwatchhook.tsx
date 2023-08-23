@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
-import { intervalToDuration } from "date-fns";
+import { intervalToDuration, millisecondsToSeconds } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
 
 export interface Times {
   hours: number;
@@ -8,28 +9,78 @@ export interface Times {
   id: string;
 }
 
-export function useStopWatch(options?: {}) {
+type TimerOptions = {
+  targetTimeEnabled?: boolean;
+  targetTime?: string;
+  stopAtTargetTime?: boolean;
+};
+
+type PreparationOptions = {
+  preparationEnabled?: boolean;
+  preparationTime?: number;
+};
+
+export function useStopWatch(
+  options: TimerOptions,
+  preparationOptions: PreparationOptions,
+) {
+  const [previousTimes, setPreviousTimes] = useState<Times[]>([]);
   const [time, setTime] = useState<Times>({
     hours: 0,
     minutes: 0,
     seconds: 0,
     id: "no assigned id",
   });
-  const [status, setStatus] = useState<"stopped" | "running">("stopped");
+  const [prepTime, setPrepTime] = useState(0);
+  const [status, setStatus] = useState<"stopped" | "running" | "preparing">(
+    "stopped",
+  );
+  const [reachedTarget, setReachedTarget] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout>(null!);
+  const [started, setStarted] = useState(false);
+  const buttonref = useRef<HTMLButtonElement>(null);
 
   function stop() {
+    setStarted(!started);
     setStatus("stopped");
-    setTime({
-      hours: 0,
-      minutes: 0,
-      seconds: 0,
-      id: "no assigned id",
-    });
+    setPreviousTimes(previousTimes.concat({ ...time, id: uuidv4() }));
+    setTime({ hours: 0, minutes: 0, seconds: 0, id: "no assigned id" });
+    setReachedTarget(false);
     clearInterval(intervalRef.current);
   }
 
-  function start() {
+  async function start() {
+    setStarted(!started);
+    if (preparationOptions.preparationEnabled) {
+      await preparing();
+      running();
+    } else {
+      running();
+    }
+  }
+
+  function preparing() {
+    let preparingPromise = new Promise((resolve, reject) => {
+      setStatus("preparing");
+      let startTime = Date.now();
+      intervalRef.current = setInterval(() => {
+        const timeSpent = intervalToDuration({
+          start: startTime,
+          end: Date.now(),
+        });
+
+        setPrepTime(timeSpent.seconds as number);
+
+        if (timeSpent.seconds === preparationOptions.preparationTime) {
+          clearInterval(intervalRef.current);
+          resolve("Preparation Done");
+        }
+      }, 10);
+    });
+    return preparingPromise;
+  }
+
+  function running() {
     setStatus("running");
     let startTime = Date.now();
     intervalRef.current = setInterval(() => {
@@ -37,12 +88,32 @@ export function useStopWatch(options?: {}) {
         start: startTime,
         end: Date.now(),
       });
-      setTime({
-        hours: timeSpent.hours as number,
-        minutes: timeSpent.minutes as number,
-        seconds: timeSpent.seconds as number,
-        id: time.id,
+      const timeInMs = Date.now() - startTime;
+
+      setTime((t) => {
+        return {
+          hours: timeSpent.hours as number,
+          minutes: timeSpent.minutes as number,
+          seconds: timeSpent.seconds as number,
+          id: time.id,
+        };
       });
+
+      if (options.targetTimeEnabled) {
+        if (
+          millisecondsToSeconds(timeInMs) >
+            parseInt(options.targetTime as string) &&
+          options.stopAtTargetTime
+        ) {
+          buttonref.current!.click();
+        }
+        if (
+          millisecondsToSeconds(timeInMs) ===
+          parseInt(options.targetTime as string)
+        ) {
+          setReachedTarget(true);
+        }
+      }
     }, 10);
   }
 
@@ -51,5 +122,11 @@ export function useStopWatch(options?: {}) {
     start,
     stop,
     status,
+    reachedTarget,
+    prepTime,
+    previousTimes,
+    started,
+    setStarted,
+    buttonref,
   };
 }
