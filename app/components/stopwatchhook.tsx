@@ -44,7 +44,12 @@ export function useStopWatch(
   function stop() {
     setStarted(!started);
     setStatus("stopped");
-    saveTime();
+    if (
+      JSON.stringify(time) !=
+      JSON.stringify({ hours: 0, minutes: 0, seconds: 0, id: "no assigned id" })
+    ) {
+      saveTime();
+    }
     setTime({ hours: 0, minutes: 0, seconds: 0, id: "no assigned id" });
     setReachedTarget(false);
     clearInterval(intervalRef.current);
@@ -136,6 +141,10 @@ export function useStopWatch(
     );
   }
 
+  function clear() {
+    setPreviousTimes([]);
+  }
+
   return {
     time,
     start,
@@ -147,5 +156,6 @@ export function useStopWatch(
     started,
     setStarted,
     buttonref,
+    clear,
   };
 }

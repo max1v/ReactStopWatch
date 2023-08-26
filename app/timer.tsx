@@ -45,6 +45,7 @@ export default function Stopwatch() {
     previousTimes,
     started,
     buttonref,
+    clear,
   } = useStopWatch(timerOptions, preparationOptions);
   const alertRef = useRef<HTMLAudioElement>(null);
   const alertFirstRunRef = useRef(true);
@@ -140,6 +141,9 @@ export default function Stopwatch() {
                       Previous Times
                     </h2>
                     <ScrollArea className="h-[200px] rounded-md border p-4">
+                      <Button variant="outline" onClick={() => clear()}>
+                        Clear
+                      </Button>
                       {previousTimes
                         .map((t) => {
                           return (
