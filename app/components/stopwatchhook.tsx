@@ -37,7 +37,7 @@ export function useStopWatch(
     "stopped",
   );
   const [reachedTarget, setReachedTarget] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout>(null!);
+  const intervalRef = useRef<NodeJS.Timeout | number>(null!);
   const [started, setStarted] = useState(false);
   const buttonref = useRef<HTMLButtonElement>(null);
 
@@ -99,34 +99,41 @@ export function useStopWatch(
   function running() {
     setStatus("running");
     let startTime = Date.now();
-    intervalRef.current = setInterval(() => {
-      const timeSpent = intervalToDuration({
-        start: startTime,
-        end: Date.now(),
-      });
-      const timeInMs = Date.now() - startTime;
+    intervalRef.current = setInterval(
+      () => {
+        const timeSpent = intervalToDuration({
+          start: startTime,
+          end: Date.now(),
+        });
+        const timeInMs = Date.now() - startTime;
 
-      setTime((t) => {
-        return {
-          hours: timeSpent.hours as number,
-          minutes: timeSpent.minutes as number,
-          seconds: timeSpent.seconds as number,
-          id: time.id,
-        };
-      });
+        setTime((t) => {
+          return {
+            hours: timeSpent.hours as number,
+            minutes: timeSpent.minutes as number,
+            seconds: timeSpent.seconds as number,
+            id: time.id,
+          };
+        });
 
-      if (options.targetTimeEnabled) {
-        if (
-          millisecondsToSeconds(timeInMs) > options.targetTime! &&
-          options.stopAtTargetTime
-        ) {
-          buttonref.current!.click();
+        if (options.targetTimeEnabled) {
+          if (millisecondsToSeconds(timeInMs) >= options.targetTime!) {
+            setReachedTarget((r) => {
+              return true;
+            });
+            console.log("targetReached");
+          }
+          if (
+            millisecondsToSeconds(timeInMs) > options.targetTime! &&
+            options.stopAtTargetTime
+          ) {
+            buttonref.current!.click();
+          }
         }
-        if (millisecondsToSeconds(timeInMs) === options.targetTime) {
-          setReachedTarget(true);
-        }
-      }
-    }, 10);
+      },
+      10,
+      [setTime, setReachedTarget],
+    );
   }
 
   return {
