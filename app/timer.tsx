@@ -64,7 +64,12 @@ export default function Stopwatch() {
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
           <TabsContent value="timer">
-            <div className="flex  flex-col items-center justify-between gap-5 text-center">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex  flex-col items-center justify-between gap-5 text-center"
+            >
               <CardHeader>
                 <CardTitle className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
                   Hold Stopwatch
@@ -108,7 +113,12 @@ export default function Stopwatch() {
                 </Button>
                 <Separator />
                 {previousTimes.length > 0 && (
-                  <ul>
+                  <motion.ul
+                    initial={{ opacity: 0, y: -50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 1 }}
+                    transition={{ type: "tween" }}
+                  >
                     <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                       Previous Times
                     </h2>
@@ -116,25 +126,36 @@ export default function Stopwatch() {
                       {previousTimes
                         .map((t) => {
                           return (
-                            <li
+                            <motion.li
+                              initial={{ opacity: 0, y: -50 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 1 }}
+                              transition={{ type: "tween" }}
                               key={t.id}
-                            >{`${t.seconds}s ${t.minutes}m ${t.hours}h`}</li>
+                            >{`${t.seconds}s ${t.minutes}m ${t.hours}h`}</motion.li>
                           );
                         })
                         .reverse()}
                     </ScrollArea>
-                  </ul>
+                  </motion.ul>
                 )}
               </CardContent>
-            </div>
+            </motion.div>
           </TabsContent>
           <TabsContent value="settings">
-            <OptionsPanel
-              options={timerOptions}
-              setOptions={setTimerOptions}
-              preparationOptions={preparationOptions}
-              setPreparationOptions={setPreparationOptions}
-            />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex  flex-col items-center justify-between gap-5 text-center"
+            >
+              <OptionsPanel
+                options={timerOptions}
+                setOptions={setTimerOptions}
+                preparationOptions={preparationOptions}
+                setPreparationOptions={setPreparationOptions}
+              />
+            </motion.div>
           </TabsContent>
         </Tabs>
       </Card>
@@ -177,27 +198,33 @@ function OptionsPanel({
           />
         </div>
         {options.targetTimeEnabled && (
-          <Card className="flex flex-col items-center gap-2 p-5">
-            <Label htmlFor="selectTargetTime">Target Time in seconds</Label>
-            <Input
-              type="number"
-              min="1"
-              autoComplete="off"
-              value={options.targetTime}
-              id="selectTargetTime"
-              onChange={(e) => {
-                setOptions({ ...options, targetTime: e.target.value });
-              }}
-            />
-            <Label htmlFor="stopattargetcheck">Stop at target time</Label>
-            <Switch
-              id="stopattargetcheck"
-              checked={options.stopAtTargetTime}
-              onCheckedChange={(c) =>
-                setOptions({ ...options, stopAtTargetTime: c })
-              }
-            />
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 1 }}
+          >
+            <Card className="flex flex-col items-center gap-2 p-5">
+              <Label htmlFor="selectTargetTime">Target Time in seconds</Label>
+              <Input
+                type="number"
+                min="1"
+                autoComplete="off"
+                value={options.targetTime}
+                id="selectTargetTime"
+                onChange={(e) => {
+                  setOptions({ ...options, targetTime: e.target.value });
+                }}
+              />
+              <Label htmlFor="stopattargetcheck">Stop at target time</Label>
+              <Switch
+                id="stopattargetcheck"
+                checked={options.stopAtTargetTime}
+                onCheckedChange={(c) =>
+                  setOptions({ ...options, stopAtTargetTime: c })
+                }
+              />
+            </Card>
+          </motion.div>
         )}
         <Separator />
         <div className="flex items-center gap-2 p-2">
@@ -219,28 +246,34 @@ function OptionsPanel({
           />
         </div>
         {preparationOptions.preparationEnabled && (
-          <Card className="flex flex-col items-center gap-2 p-5">
-            <Label>Select Preparation time</Label>
-            <Select
-              defaultValue={preparationOptions.preparationTime?.toString()}
-              onValueChange={(currentValue) => {
-                // e.preventDefault();
-                setPreparationOptions({
-                  ...preparationOptions,
-                  preparationTime: parseInt(currentValue),
-                });
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Time before start" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="5">5s</SelectItem>
-                <SelectItem value="15">15s</SelectItem>
-                <SelectItem value="30">30s</SelectItem>
-              </SelectContent>
-            </Select>
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 1 }}
+          >
+            <Card className="flex flex-col items-center gap-2 p-5">
+              <Label>Select Preparation time</Label>
+              <Select
+                defaultValue={preparationOptions.preparationTime?.toString()}
+                onValueChange={(currentValue) => {
+                  // e.preventDefault();
+                  setPreparationOptions({
+                    ...preparationOptions,
+                    preparationTime: parseInt(currentValue),
+                  });
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Time before start" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">5s</SelectItem>
+                  <SelectItem value="15">15s</SelectItem>
+                  <SelectItem value="30">30s</SelectItem>
+                </SelectContent>
+              </Select>
+            </Card>
+          </motion.div>
         )}
       </form>
     </div>
