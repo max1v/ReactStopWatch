@@ -71,12 +71,6 @@ dependencies:
   postcss:
     specifier: 8.4.28
     version: 8.4.28
-  prettier:
-    specifier: ^3.0.2
-    version: 3.0.2
-  prettier-plugin-tailwindcss:
-    specifier: ^0.5.3
-    version: 0.5.3(prettier@3.0.2)
   react:
     specifier: 18.2.0
     version: 18.2.0
@@ -98,6 +92,14 @@ dependencies:
   uuid:
     specifier: ^9.0.0
     version: 9.0.0
+
+devDependencies:
+  prettier:
+    specifier: ^3.0.2
+    version: 3.0.2
+  prettier-plugin-tailwindcss:
+    specifier: ^0.5.3
+    version: 0.5.3(prettier@3.0.2)
 
 packages:
 
@@ -2899,13 +2901,13 @@ packages:
         optional: true
     dependencies:
       prettier: 3.0.2
-    dev: false
+    dev: true
 
   /prettier@3.0.2:
     resolution: {integrity: sha512-o2YR9qtniXvwEZlOKbveKfDQVyqxbEIWn48Z8m3ZJjBjcCmUy3xZGIv+7AkaeuaTr6yPXJjwv07ZWlsWbEy1rQ==}
     engines: {node: '>=14'}
     hasBin: true
-    dev: false
+    dev: true
 
   /prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
