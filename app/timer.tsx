@@ -91,7 +91,7 @@ export default function Stopwatch() {
                   variant={`${status === "stopped" ? "outline" : "default"}`}
                 >
                   {status}
-                  {status === "preparing" && `${prepTime}s`}
+                  {status === "preparing" && ` ${prepTime}s`}
                 </Badge>
                 {reachedTarget && (
                   <Badge variant="secondary">Target time reached</Badge>
