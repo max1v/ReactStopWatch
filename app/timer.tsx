@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { motion } from "framer-motion";
 import {
@@ -46,6 +46,8 @@ export default function Stopwatch() {
     started,
     buttonref,
   } = useStopWatch(timerOptions, preparationOptions);
+  const alertRef = useRef<HTMLAudioElement>(null);
+  const alertFirstRunRef = useRef(true);
 
   async function handleStartStopButtons() {
     if (!started) {
@@ -54,6 +56,14 @@ export default function Stopwatch() {
       stop();
     }
   }
+
+  useEffect(() => {
+    if (alertFirstRunRef.current) {
+      alertFirstRunRef.current = false;
+      return;
+    }
+    alertRef.current!.play();
+  }, [started, reachedTarget, status]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -79,6 +89,13 @@ export default function Stopwatch() {
                 <div className="flex flex-col items-start">
                   <p className="leading-7">{time.seconds} seconds</p>
                   <p className="leading-7">{time.minutes} minutes</p>
+                  <audio
+                    src="/alert_simple-notloud.mp3"
+                    ref={alertRef}
+                    className="hidden"
+                  >
+                    Play sound
+                  </audio>
                   <p className="leading-7">{time.hours} hours</p>
                   {timerOptions.targetTimeEnabled && (
                     <p className="text-left text-sm text-muted-foreground">{`Target time set at ${
