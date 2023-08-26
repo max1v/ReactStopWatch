@@ -13,6 +13,7 @@ type TimerOptions = {
   targetTimeEnabled?: boolean;
   targetTime?: string;
   stopAtTargetTime?: boolean;
+  savelimit?: number;
 };
 
 type PreparationOptions = {
@@ -43,10 +44,25 @@ export function useStopWatch(
   function stop() {
     setStarted(!started);
     setStatus("stopped");
-    setPreviousTimes(previousTimes.concat({ ...time, id: uuidv4() }));
+    saveTime();
     setTime({ hours: 0, minutes: 0, seconds: 0, id: "no assigned id" });
     setReachedTarget(false);
     clearInterval(intervalRef.current);
+  }
+
+  function saveTime() {
+    if (options.savelimit) {
+      setPreviousTimes((previousTimes) => {
+        if (previousTimes.length >= options.savelimit!) {
+          return previousTimes.slice(1).concat({ ...time, id: uuidv4() });
+        }
+        return previousTimes.concat({ ...time, id: uuidv4() });
+      });
+    } else {
+      setPreviousTimes((previousTimes) => {
+        return previousTimes.concat({ ...time, id: uuidv4() });
+      });
+    }
   }
 
   async function start() {

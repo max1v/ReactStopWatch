@@ -9,6 +9,7 @@ export default function Stopwatch() {
     targetTimeEnabled: false,
     targetTime: "0",
     stopAtTargetTime: false,
+    savelimit: 5,
   });
   const [preparationOptions, setPreparationOptions] = useState({
     preparationEnabled: false,
