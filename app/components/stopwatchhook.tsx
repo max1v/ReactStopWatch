@@ -9,14 +9,14 @@ export interface Times {
   id: string;
 }
 
-type TimerOptions = {
+export type TimerOptions = {
   targetTimeEnabled?: boolean;
-  targetTime?: string;
+  targetTime?: number;
   stopAtTargetTime?: boolean;
   savelimit?: number;
 };
 
-type PreparationOptions = {
+export type PreparationOptions = {
   preparationEnabled?: boolean;
   preparationTime?: number;
 };
@@ -117,16 +117,12 @@ export function useStopWatch(
 
       if (options.targetTimeEnabled) {
         if (
-          millisecondsToSeconds(timeInMs) >
-            parseInt(options.targetTime as string) &&
+          millisecondsToSeconds(timeInMs) > options.targetTime! &&
           options.stopAtTargetTime
         ) {
           buttonref.current!.click();
         }
-        if (
-          millisecondsToSeconds(timeInMs) ===
-          parseInt(options.targetTime as string)
-        ) {
+        if (millisecondsToSeconds(timeInMs) === options.targetTime) {
           setReachedTarget(true);
         }
       }
