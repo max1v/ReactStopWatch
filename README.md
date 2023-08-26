@@ -1,34 +1,59 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# React Stop Watch
 
-## Getting Started
+A fully typed stopwatch with preparation time and target time, built with Next.js, React, TypeScript, Shadcn UI, and Framer Motion.
 
-First, run the development server:
+## Why I made this
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+I recently started doing this bodyweight exercise, the ring hold, and I needed a way to record my time on the correct position, to know that I am surpassing myself (using target times) and a stopwatch that didn't start the instant I hit the start button, neither my phone's clock app nor my workout app had have these options. I thought it would be fun to make the app.
+
+## How it works
+
+The app is a Next.js route that renders a Stopwatch component, which renders an OptionsPanel component.
+
+They rely on an original hook `useStopWatch` that requires 2 objects, `TimerOptions` and `PreparationOptions`:
+
+```typescript
+export type TimerOptions = {
+  targetTimeEnabled?: boolean;
+  targetTime?: number;
+  stopAtTargetTime?: boolean;
+  savelimit?: number;
+};
+
+export type PreparationOptions = {
+  preparationEnabled?: boolean;
+  preparationTime?: number;
+};
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+And returns these properties and methods:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```markdown
+- `time`: Tells the current time on the clock
+- `start`: To get the clock to start
+- `stop`: To get the clock to stop
+- `status`: To use the current state of the clock (running, stopped or preparing)
+- `reachedTarget`: Tells if the user reached their target time
+- `prepTime`: Tells the current preparing time
+- `previousTimes`: Array containing all previous recorded times (times stopped at 0 are not recorded)
+- `started`: To use for UI toggles
+- `setStarted`: To use for UI toggles
+- `buttonref`: To pass to the button that will start/stop the clock
+- `clear`: To clear all previous recorded times.
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Usage
 
-## Learn More
+To use the app, you can visit:
 
-To learn more about Next.js, take a look at the following resources:
+[The Official Website](https://react-stop-watch-ecru.vercel.app/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Or download the file folders and run
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
+> npm run build
+and when that is done, run
+> npm run start
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+in the terminal from the root directory of the project
