@@ -53,7 +53,7 @@ Or download the file folders and run
 ```
 > npm run build
 and when that is done, run
-> npm run start
+npm run start
 ```
 
 in the terminal from the root directory of the project
