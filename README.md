@@ -47,13 +47,3 @@ And returns these properties and methods:
 To use the app, you can visit:
 
 [The Official Website](https://react-stop-watch-ecru.vercel.app/)
-
-Or download the file folders and run
-
-```
-> npm run build
-and when that is done, run
-npm run start
-```
-
-in the terminal from the root directory of the project
